@@ -13,6 +13,16 @@ img {
   display: flex;
   gap: 8px;
   margin-top: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
 }
 
 button {
@@ -29,8 +39,18 @@ button {
 .thumbnail {
   cursor: pointer;
   opacity: 0.4;
+  flex: 0 0 auto;
+  transition: all 0.3s ease;
 }
 
-.active {
+.thumbnail.active {
   opacity: 1;
+  transform: scale(1.1);
 }
+
+/* .thumb-nav {
+  all: unset;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 10px;
+} */
