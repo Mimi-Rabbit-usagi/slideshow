@@ -4,7 +4,9 @@
   const mainImage = document.getElementById("main-image");
   const next = document.getElementById("next");
   const prev = document.getElementById("prev");
+  const thumbnailContainer = document.querySelector(".container");
   let activeIndex = 0;
+  let visibleStartIndex = 0;
   let intervalId;
 
   function switchImage(index) {
@@ -17,10 +19,28 @@
         thumb.classList.remove("active");
       }
     });
+    updateVisibleThumbnails();
   }
+
+  function updateVisibleThumbnails() {
+    if (activeIndex < visibleStartIndex) {
+      visibleStartIndex = activeIndex;
+    } else if (activeIndex >= visibleStartIndex + 3) {
+      visibleStartIndex = activeIndex - 2;
+    }
+
+    thumbnails.forEach((thumb, i) => {
+      if (i >= visibleStartIndex && i < visibleStartIndex + 3) {
+        thumb.style.display = "inline-block";
+      } else {
+        thumb.style.display = "none";
+      }
+    });
+  }
+
   //サムネイルクリックしたときに画像が切り替わる
-  thumbnails.forEach((thumbnails, index) => {
-    thumbnails.addEventListener("click", () => switchImage(index));
+  thumbnails.forEach((thumbnail, index) => {
+    thumbnail.addEventListener("click", () => switchImage(index));
   });
 
   //画像の自動切り替え
@@ -50,4 +70,35 @@
   //矢印をクリックで画像
   next.addEventListener("click", () => updateSlide(1));
   prev.addEventListener("click", () => updateSlide(-1));
+
+  // //サムネイルのカルーセル用の矢印ボタン
+  // const thumbNext = document.createElement("button");
+  // thumbNext.textContent = ">";
+  // thumbNext.classList.add("thumb-nav");
+  // const thumbPrev = document.createElement("button");
+  // thumbPrev.textContent = "<";
+  // thumbPrev.classList.add("thumb-nav");
+
+  // thumbnailContainer.parentNode.insertBefore(thumbPrev, thumbnailContainer);
+  // thumbnailContainer.parentNode.insertBefore(
+  //   thumbNext,
+  //   thumbnailContainer.nextSibling
+  // );
+
+  // thumbNext.addEventListener("click", () => {
+  //   if (visibleStartIndex + 3 < thumbnails.length) {
+  //     visibleStartIndex++;
+  //     updateVisibleThumbnails();
+  //   }
+  // });
+
+  // thumbPrev.addEventListener("click", () => {
+  //   if (visibleStartIndex > 0) {
+  //     visibleStartIndex--;
+  //     updateVisibleThumbnails();
+  //   }
+  // });
+
+  //初期化
+  updateVisibleThumbnails();
 }
