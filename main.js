@@ -5,50 +5,49 @@
   const next = document.getElementById("next");
   const prev = document.getElementById("prev");
   let activeIndex = 0;
+  let intervalId;
 
-  thumbnails[0].addEventListener("click", () => {
-    activeIndex = 0;
-    mainImage.src = thumbnails[0].src;
-    thumbnails[0].classList.add("active");
-    thumbnails[1].classList.remove("active");
-    thumbnails[2].classList.remove("active");
-  });
-  thumbnails[1].addEventListener("click", () => {
-    activeIndex = 1;
-    mainImage.src = thumbnails[1].src;
-    thumbnails[0].classList.remove("active");
-    thumbnails[1].classList.add("active");
-    thumbnails[2].classList.remove("active");
-  });
-  thumbnails[2].addEventListener("click", () => {
-    activeIndex = 2;
-    mainImage.src = thumbnails[2].src;
-    thumbnails[0].classList.remove("active");
-    thumbnails[1].classList.remove("active");
-    thumbnails[2].classList.add("active");
+  function switchImage(index) {
+    activeIndex = index;
+    mainImage.src = thumbnails[index].src;
+    thumbnails.forEach((thumb, i) => {
+      if (i === index) {
+        thumb.classList.add("active");
+      } else {
+        thumb.classList.remove("active");
+      }
+    });
+  }
+  //サムネイルクリックしたときに画像が切り替わる
+  thumbnails.forEach((thumbnails, index) => {
+    thumbnails.addEventListener("click", () => switchImage(index));
   });
 
-  next.addEventListener("click", () => {
-    activeIndex++;
-    if (activeIndex > 2) {
-      activeIndex = 0;
-    }
-    mainImage.src = thumbnails[activeIndex].src;
-    thumbnails[0].classList.remove("active");
-    thumbnails[1].classList.remove("active");
-    thumbnails[2].classList.remove("active");
-    thumbnails[activeIndex].classList.add("active");
-  });
+  //画像の自動切り替え
+  function autoSwitch() {
+    activeIndex = (activeIndex + 1) % thumbnails.length;
+    switchImage(activeIndex);
+  }
 
-  prev.addEventListener("click", () => {
-    activeIndex--;
-    if (activeIndex < 0) {
-      activeIndex = 2;
-    }
-    mainImage.src = thumbnails[activeIndex].src;
-    thumbnails[0].classList.remove("active");
-    thumbnails[1].classList.remove("active");
-    thumbnails[2].classList.remove("active");
-    thumbnails[activeIndex].classList.add("active");
-  });
+  function startAutoSwitch() {
+    intervalId = setInterval(autoSwitch, 3000);
+  }
+  function stopAutoSwitch() {
+    clearInterval(intervalId);
+  }
+
+  startAutoSwitch();
+  mainImage.addEventListener("mouseenter", stopAutoSwitch);
+  mainImage.addEventListener("mouseleave", startAutoSwitch);
+
+  function updateSlide(direction) {
+    activeIndex =
+      (activeIndex + direction + thumbnails.length) % thumbnails.length;
+    switchImage(activeIndex);
+    stopAutoSwitch();
+    startAutoSwitch();
+  }
+  //矢印をクリックで画像
+  next.addEventListener("click", () => updateSlide(1));
+  prev.addEventListener("click", () => updateSlide(-1));
 }
