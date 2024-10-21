@@ -6,7 +6,6 @@
   const prev = document.getElementById("prev");
   const thumbnailContainer = document.querySelector(".container");
   let activeIndex = 0;
-  let visibleStartIndex = 0;
   let intervalId;
 
   function switchImage(index) {
@@ -24,17 +23,21 @@
 
   function updateVisibleThumbnails() {
     const totalThumbnails = thumbnails.length;
-    let startIndex = activeIndex - 1;
+    let startIndex;
 
-    if (startIndex < 0) startIndex = totalThumbnails - 1;
-    if (startIndex + 2 >= totalThumbnails) startIndex = 0;
+    if (activeIndex === totalThumbnails - 1) {
+      //最後の画像の場合
+      startIndex = Math.max(totalThumbnails - 3, 0);
+    } else if (activeIndex === 0) {
+      //最初の画像の場合
+      startIndex = 0;
+    } else {
+      //それ以外の場合
+      startIndex = activeIndex - 1;
+    }
 
     thumbnails.forEach((thumb, i) => {
-      if (
-        i === startIndex ||
-        i === (startIndex + 1) % totalThumbnails ||
-        i === (startIndex + 2) % totalThumbnails
-      ) {
+      if (i >= startIndex && i < startIndex + 3) {
         thumb.style.display = "inline-block";
       } else {
         thumb.style.display = "none";
@@ -105,5 +108,4 @@
 
   //初期化
   switchImage(0);
-  updateVisibleThumbnails();
 }
