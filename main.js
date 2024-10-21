@@ -6,7 +6,6 @@
   const prev = document.getElementById("prev");
   const thumbnailContainer = document.querySelector(".container");
   let activeIndex = 0;
-  let visibleStartIndex = 0;
   let intervalId;
 
   function switchImage(index) {
@@ -23,14 +22,22 @@
   }
 
   function updateVisibleThumbnails() {
-    if (activeIndex < visibleStartIndex) {
-      visibleStartIndex = activeIndex;
-    } else if (activeIndex >= visibleStartIndex + 3) {
-      visibleStartIndex = activeIndex - 2;
+    const totalThumbnails = thumbnails.length;
+    let startIndex;
+
+    if (activeIndex === totalThumbnails - 1) {
+      //最後の画像の場合
+      startIndex = Math.max(totalThumbnails - 3, 0);
+    } else if (activeIndex === 0) {
+      //最初の画像の場合
+      startIndex = 0;
+    } else {
+      //それ以外の場合
+      startIndex = activeIndex - 1;
     }
 
     thumbnails.forEach((thumb, i) => {
-      if (i >= visibleStartIndex && i < visibleStartIndex + 3) {
+      if (i >= startIndex && i < startIndex + 3) {
         thumb.style.display = "inline-block";
       } else {
         thumb.style.display = "none";
@@ -100,5 +107,5 @@
   // });
 
   //初期化
-  updateVisibleThumbnails();
+  switchImage(0);
 }
