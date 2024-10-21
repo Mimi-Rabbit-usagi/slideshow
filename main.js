@@ -23,14 +23,18 @@
   }
 
   function updateVisibleThumbnails() {
-    if (activeIndex < visibleStartIndex) {
-      visibleStartIndex = activeIndex;
-    } else if (activeIndex >= visibleStartIndex + 3) {
-      visibleStartIndex = activeIndex - 2;
-    }
+    const totalThumbnails = thumbnails.length;
+    let startIndex = activeIndex - 1;
+
+    if (startIndex < 0) startIndex = totalThumbnails - 1;
+    if (startIndex + 2 >= totalThumbnails) startIndex = 0;
 
     thumbnails.forEach((thumb, i) => {
-      if (i >= visibleStartIndex && i < visibleStartIndex + 3) {
+      if (
+        i === startIndex ||
+        i === (startIndex + 1) % totalThumbnails ||
+        i === (startIndex + 2) % totalThumbnails
+      ) {
         thumb.style.display = "inline-block";
       } else {
         thumb.style.display = "none";
@@ -100,5 +104,6 @@
   // });
 
   //初期化
+  switchImage(0);
   updateVisibleThumbnails();
 }
